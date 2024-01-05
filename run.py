@@ -11,7 +11,7 @@ titles_to_find = ['I Killed an Academy Player', 'Solo Max-Level Newbie', 'My Sch
 def index():
   return render_template('index.html')
 
-@app.rout('/sasura')
+@app.route('/sasura')
 def scrape_asura():
   websites = ['https://asuratoon.com/', 'https://asuratoon.com/page/2', 'https://asuratoon.com/page/3']
   matches = {}
