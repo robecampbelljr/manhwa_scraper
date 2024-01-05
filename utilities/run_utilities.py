@@ -1,5 +1,4 @@
 def get_titles(series_anchors, titles_to_search_for):
-  print("Title utility sucessfully called")
   lib = []
   for a in series_anchors:
     title_element = a.find('h4')

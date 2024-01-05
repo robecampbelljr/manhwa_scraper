@@ -5,10 +5,15 @@ from utilities.run_utilities import get_titles
 
 app = Flask(__name__)
 
+titles_to_find = ['I Killed an Academy Player', 'Solo Max-Level Newbie', 'My School Life Pretending To Be a Worthless Person']
+
 @app.route('/')
 def index():
-  websites = ['https://asuratoon.com/']
-  titles_to_find = ['I Killed an Academy Player', 'Solo Max-Level Newbie']
+  return render_template('index.html')
+
+@app.rout('/sasura')
+def scrape_asura():
+  websites = ['https://asuratoon.com/', 'https://asuratoon.com/page/2', 'https://asuratoon.com/page/3']
   matches = {}
   for url in websites:
     response = requests.get(url)
@@ -16,10 +21,8 @@ def index():
       soup = BeautifulSoup(response.text, 'html.parser')
       series_divs = soup.find_all('div', class_='luf')
       titles = get_titles(series_divs, titles_to_find)
-      print(titles)
     else:
       print(f"Unable to retrieve data from {url}")
-  return render_template('index.html', matches=matches)
 
 if __name__ == '__main__':
   app.run(debug=True)
