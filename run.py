@@ -1,15 +1,18 @@
 from flask import Flask, render_template
-from bs4 import BeautifulSoup
-import requests
-from utilities.run_utilities import filter_titles
+from utilities.run_utilities import filter_titles, site_parser
 import shelve
-from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
-load_dotenv()
-titles_to_find = os.getenv('TITLES_TO_FIND')
-websites = os.getenv('WEBSITES')
+
+#
+#
+# 'titles_to_find' and 'websites' will eventually access a shelve created by the get_url_by_title script. For now will leave as blank arrays
+titles_to_find = []
+websites = []
+#
+#
+#
 
 @app.route('/')
 def index():
@@ -18,17 +21,20 @@ def index():
 @app.route('/sasura')
 def scrape_asura():
   titles = []
-  for url in websites:
-    response = requests.get(url)
-    if response.status_code == 200:
-      soup = BeautifulSoup(response.text, 'html.parser')
-      series_divs = soup.find_all('div', class_='luf')
-      titles = filter_titles(series_divs, titles_to_find)
-      for title in titles:
-        print(f"{title}")
-        print("====================================================")
-    else:
-      print(f"Unable to retrieve data from {url}")
+  # This will change after link shelve has been implemented
+  # The new version will parse the link shelve created by get_url_by_title
+  # It will look for the chapter elements in the manhwa's main page
+  # It will log the most recent chapter
+  series_divs = site_parser(websites, 'div', 'luf')
+  # If the most recent chapter is the same as the last one I read as compared to the last read shelve
+    # Then ignore it and alert me somehome
+  # elif the chapter is the next chapter (e.g. chapter# == last chapter + 1)
+    # Save and display the chapter on the front end linked to the asuratoon chapter
+    # Update the last read shelve with the new chapter for that title
+  ### Some times AT chapters are numbered with decimals (e.g. 1.1, 1.2, 1.3, etc.)
+  ### I will have to work on logic to compensate for that eventually
+  ### As of now, that doesn't happen too often so I will not worry about it for v1.0
+  titles = filter_titles(series_divs, titles_to_find)
   return "Asura Scraped Smee!", 200
 
 if __name__ == '__main__':
