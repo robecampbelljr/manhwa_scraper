@@ -8,14 +8,14 @@ series_anchors = site_parser(websites, 'a', 'series')
 lib = []
 # Next step will be if series anchors are truthy,
 if series_anchors:
+  # Filter all the anchors by the desired titles
   filtered_anchors = filter_titles(series_anchors, titles_to_find)
   # then we will iterate through the list
   for series in filtered_anchors:
-    print(series.get('href'))
-    print("====================================================================")
     # and extract each link from the anchor and add it to our link shelve with the 'Title: link' format
-    # lib.append(series.get('href'))
-#for link in lib:
-#  print(link)
-
+    link = series.get('href')
+    title = series.find('h4').text.strip()
+    # Storing "title: link" key value pairs in shelf for persistance and access in other places
+    with shelve.open('title_page') as shelf:
+      shelf[title] = link
 # Then run.py can use the shelve to retrieve titles and links to each individual titles main page
