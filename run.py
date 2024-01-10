@@ -23,13 +23,16 @@ def scrape_asura():
   titles = []
   # This will change after link shelve has been implemented
   # The new version will parse the link shelve created by get_url_by_title
-  # It will look for the chapter elements in the manhwa's main page
-  # It will log the most recent chapter
-  # If the most recent chapter is the same as the last one I read as compared to the last read shelve
-    # Then ignore it and alert me somehome
-  # elif the chapter is the next chapter (e.g. chapter# == last chapter + 1)
-    # Save and display the chapter on the front end linked to the asuratoon chapter
-    # Update the last read shelve with the new chapter for that title
+  with shelve.open('title_page') as shelf:
+    # It will look for the chapter elements in the manhwa's main page
+    for key, value in shelf.items():
+      print(f"{key}: {value}\n")
+    # It will log the most recent chapter
+    # If the most recent chapter is the same as the last one I read as compared to the last read shelve
+      # Then ignore it and alert me somehome
+    # elif the chapter is the next chapter (e.g. chapter# == last chapter + 1)
+      # Save and display the chapter on the front end linked to the asuratoon chapter
+      # Update the last read shelve with the new chapter for that title
   ### Some times AT chapters are numbered with decimals (e.g. 1.1, 1.2, 1.3, etc.)
   ### I will have to work on logic to compensate for that eventually
   ### As of now, that doesn't happen too often so I will not worry about it for v1.0
