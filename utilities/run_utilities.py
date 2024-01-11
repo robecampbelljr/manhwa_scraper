@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-import time
+from datetime import datetime
 
 def filter_titles(series_divs, titles_to_search_for):
   lib = []
@@ -25,3 +25,14 @@ def site_parser(websites, element_to_search, class_to_search):
         for element in element_list:
           desired_elements.append(element)
   return desired_elements
+
+def filter_by_date(chapters):
+  today_chapter_date_spans = []
+  today_datetime = datetime.now()
+  today_date = today_datetime.strftime('%B %d, %Y')
+  for chapter in chapters:
+    chapter_date = chapter.select_one('.chapterdate').get_text(strip=True)
+    if chapter_date == today_date:
+      today_chapter_date_spans.append(chapter)
+  print("End of date filter.")
+  return today_chapter_date_spans
