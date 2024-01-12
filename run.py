@@ -18,29 +18,32 @@ websites = []
 def index():
   return render_template('index.html')
 
+# **** CURRENT IN DEV **** v1.0 is going through the list of desired titles and pulling all the chapters that were published today.
+
+# v2.0 will keep track of the last chapter that I read and the date it was published in a shelf. It will then pull all chapters that have
+# been published for that title since the last time I read
+
 @app.route('/sasura')
 def scrape_asura():
+  todays_chapters = []
   titles = []
-  # This will change after link shelve has been implemented
-  # The new version will parse the link shelve created by get_url_by_title
   with shelve.open('title_page') as shelf:
-    # It will look for the chapter elements in the manhwa's main page
     for title, link in shelf.items():
-      # It will log the most recent chapter
-      if title == 'Terminally-Ill Genius Dark Knight':
-        chapters = site_parser([link], 'div', 'eph-num')
-        todays_chapters = filter_by_date(chapters)
-        for chapter in todays_chapters:
-          print(f"=============\n{chapter}\n================")
-      # If the most recent chapter is the same as the last one I read as compared to the last read shelve
-        # Then ignore it and alert me somehome
-      # elif the chapter is the next chapter (e.g. chapter# == last chapter + 1)
-        # Save and display the chapter on the front end linked to the asuratoon chapter
-        # Update the last read shelve with the new chapter for that title
-  ### Some times AT chapters are numbered with decimals (e.g. 1.1, 1.2, 1.3, etc.)
-  ### I will have to work on logic to compensate for that eventually
-  ### As of now, that doesn't happen too often so I will not worry about it for v1.0
-  return "Asura Scraped Smee!", 200
+      chapter_info={}
+      # Get all the chapters from the manhwa's main page
+      chapters = site_parser([link], 'div', 'eph-num')
+      # Pull chapters that were published today
+      chapters = filter_by_date(chapters)
+      for chapter in chapters:
+        chapter_info = {
+          'title': title,
+          'link': chapter.find('a').get('href'),
+          'chapternum': chapter.find('span', class_='chapternum').get_text(strip=True),
+          'chapterdate': chapter.find('span', class_='chapterdate').get_text(strip=True),
+        }
+        todays_chapters.append(chapter_info)
+  print(f'Chapters: {todays_chapters}')
+  return render_template('index.html', todays_chapters=todays_chapters)
 
 if __name__ == '__main__':
   app.run(debug=True)
