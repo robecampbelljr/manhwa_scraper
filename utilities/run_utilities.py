@@ -27,12 +27,11 @@ def site_parser(websites, element_to_search, class_to_search):
   return desired_elements
 
 def filter_by_date(chapters):
-  today_chapter_date_spans = []
+  today_chapter_spans = []
   today_datetime = datetime.now()
   today_date = today_datetime.strftime('%B %d, %Y')
   for chapter in chapters:
     chapter_date = chapter.select_one('.chapterdate').get_text(strip=True)
     if chapter_date == today_date:
-      today_chapter_date_spans.append(chapter)
-  print("End of date filter.")
-  return today_chapter_date_spans
+      today_chapter_spans.append(chapter)
+  return today_chapter_spans
