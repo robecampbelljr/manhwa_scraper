@@ -15,9 +15,8 @@
     {% for chapter in todays_chapters %}
         <div class="chapter">
             <h2>{{ chapter['title'] }}</h2>
-            <p>Chapter: {{ chapter['chapternum'] }}</p>
+            <a href="{{ chapter['link'] }}" target="_blank"><p>Chapter: {{ chapter['chapternum'] }}</p></a>
             <p>Date: {{ chapter['chapterdate'] }}</p>
-            <a href="{{ chapter['link'] }}">Read Chapter</a>
         </div>
     {% endfor %}
 </div>
