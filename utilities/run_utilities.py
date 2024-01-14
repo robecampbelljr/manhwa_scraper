@@ -1,6 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
+import shelve
+
+class Manhwa:
+  def __init__(self, title, imglink, link, chapternum, chapterdate):
+    self.title = title
+    self.imglink = imglink
+    self.link = link
+    self.chapternum = chapternum
+    self.chapterdate = chapterdate
 
 def filter_titles(series_divs, titles_to_search_for):
   lib = []
@@ -23,7 +32,10 @@ def site_parser(websites, element_to_search, class_to_search):
       element_list = soup.find_all(element_to_search, class_=class_to_search)
       if element_list:
         for element in element_list:
-          desired_elements.append(element)
+          title_element = element.find('h4')
+          if title_element:
+            title = title_element.text.strip()
+            desired_elements.append(Manhwa(title, url, element.find('a').get('href'), element.find('span', class_='chapternum').get_text(strip=True), element.find('span', class_='chapterdate').get_text(strip=True)))
   return desired_elements
 
 def filter_by_date(chapters):
@@ -35,3 +47,10 @@ def filter_by_date(chapters):
     if chapter_date == today_date:
       today_chapter_spans.append(chapter)
   return today_chapter_spans
+
+def shelve_chapter(chapter):
+  with shelve.open('last_chapter_log') as shelf:
+    if chapter.title in shelf:
+      del shelf[chapter.title]
+    shelf[chapter.title] = chapter
+  return 200
