@@ -36,6 +36,7 @@ def site_parser(websites, element_to_search, class_to_search):
           if title_element:
             title = title_element.text.strip()
             desired_elements.append(Manhwa(title, url, element.find('a').get('href'), element.find('span', class_='chapternum').get_text(strip=True), element.find('span', class_='chapterdate').get_text(strip=True)))
+  print(desired_elements)
   return desired_elements
 
 def filter_by_date(chapters):
